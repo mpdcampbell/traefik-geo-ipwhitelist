@@ -1,24 +1,24 @@
 #!/bin/bash
 
-#This script downloads country-wide IP lists and formats into a forwardauth middleware to make a local GeoIpWhitelist for Traefik
-#The country IP data is obtained from the GeoLite2 csv database created by Maxmind
+#This script downloads country-wide IP lists and formats into a forwardauth middleware to make a local geolocation ipWhiteList for Traefik
+#The country IP data is obtained from the GeoLite2 csv database created by maxmind
 #Accessing the GeoLite 2 database is free but requires an account and licence key
-#For more usage TOS and to create account see https://www.maxmind.com
+#For maxmind's TOS and to make account see https://www.maxmind.com
 
 #VARIABLES
 ################
 countryCodes=("US" "CH") #ISO alpha-2 codes
 maxMindLicenceKey= ENTER LICENCE KEY HERE
-middlewareFilename="geoip-whitelist.yml"
-middlewareName="middlewares-geoip-whitelist"
-traefikProviderDir= ENTER PATH TO MIDDLEWARE FILES eg /home/user/traefik/rules/
+middlewareFilename="geo-ipwhitelist.yml"
+middlewareName="middlewares-geo-ipwhitelist"
+traefikProviderDir= ENTER PATH TO MIDDLEWARE FILES eg /home/user/traefik/rules
 middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
 lastModifiedFilename="last-modified.txt"
 
 #SCRIPT
 #################
 
-#Load in datetime geoIPi last modified
+#Load in datetime geoIP list last modified
 if [ -f ${lastModifiedFilename} ]; then
   lastModified=$(cat ${lastModifiedFilename} )
 else
@@ -51,7 +51,7 @@ EOF
   cat countryIPList/*Blocks*.csv | cut -d, -f 1-2 --output-delimiter=" " > countryIPList/globalIPList.txt
   
   #Add comment to middleware file with which countries included in whitelist 
-  echo "         # Whitelisted countries: ${countryCodes[@]}" >> ${middlewareFilePath}
+  echo "         # ipWhiteList countries: ${countryCodes[@]}" >> ${middlewareFilePath}
     
   for country in ${countryCodes[@]}; do
     #Extract geonameID for each country  
@@ -63,10 +63,10 @@ EOF
   
   # Delete zip and extracted files
   rm -r countryIPList*
-  echo "${lastModifiedFilename} has been updated, whitelisted countries are ${countryCodes[@]}"
+  echo "${lastModifiedFilename} has been updated, ipWhiteList countries are ${countryCodes[@]}"
 
 else
-  echo "GeoLite2 Country List hasn't been modified since the whitelist last was generated."
-  echo "If you wish to change the list of countries whitelisted in the middleware, delete ${lastModifiedFilename} and run again."
+  echo "GeoLite2 Country List hasn't been modified since the ipWhiteList last was generated."
+  echo "If you wish to change the ipWhiteList countries, delete ${lastModifiedFilename} and run again."
 
 fi
