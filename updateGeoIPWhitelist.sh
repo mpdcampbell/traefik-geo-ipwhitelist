@@ -16,7 +16,7 @@ middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
 lastModifiedFilename="last-modified.txt"
 
 #SCRIPT
-##################
+#################
 
 #Load in datetime geoIPi last modified
 if [ -f ${lastModifiedFilename} ]; then
@@ -63,6 +63,7 @@ EOF
   
   # Delete zip and extracted files
   rm -r countryIPList*
+  echo "${lastModifiedFilename} has been updated, whitelisted countries are ${countryCodes[@]}"
 
 else
   echo "GeoLite2 Country List hasn't been modified since the whitelist last was generated."
