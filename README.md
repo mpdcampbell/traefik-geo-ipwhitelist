@@ -50,7 +50,7 @@ It should be of the same format as example geo-ipWhiteList.yml
 
 ### 4. Add middleware to router
 Add the middleware to the desired router. Exact syntax for this varies depending on your [Traefik configuration](https://doc.traefik.io/traefik/middlewares/overview/)</br>
-See below a general example for a Docker config, key part is defining "@file" at end of middleware name to tell Traefik it is defined in a file at provider directory.</br> 
+See below a general example for a Docker config, key part is defining "@file" at end of middleware name to inform Traefik the middleware is defined in a file at the provider directory.</br> 
 (For example implementation see [L358](https://github.com/mpdcampbell/selfhosted-services/blob/main/docker-compose-traefik.yml#L358) from my selfhosted-services [docker-compose.yml](https://github.com/mpdcampbell/selfhosted-services/blob/main/docker-compose-traefik.yml))
 
 ```yml
