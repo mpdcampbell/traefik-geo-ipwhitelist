@@ -1,4 +1,4 @@
-# traefik-geoip-whitelist
+# traefik-geo-ipwhitelist
 A bash script to download GeoLite2 country database, extract the IPs for a given list of countries and format into a ipWhiteList middleware file for Traefik.</br>
 </br>
 When downloading the GeoLite2 database the script saves datetime to local file.
@@ -31,14 +31,14 @@ The geolocation IP list is downloaded from the free GeoLite2 database, [more inf
 ### 2. Update the local variables
 Variables you have to change
 
-| Variables          | What it is                            |
+| Variable           | What it is                            |
 | ------------------ | ------------------------------------- |
 | countryCodes       | Array of [ISO alpha-2 codes]( https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements)         |
 | maxMindLicenceKey  | Your maxMind licence key              |
 | traefikProviderDir | The directory path where your Traefik instance looks for [provider files](https://doc.traefik.io/traefik/providers/file/) |
 
 Variables you might want to change
-| Variables            | What it is                            |
+| Variable             | What it is                            |
 | -------------------- | ------------------------------------- |
 | middlewareFilename   | The filename for the yml that defines the ipWhitelist middleware |
 | middlewareName  | The name for the middleware to be referenced in traefik config        |
