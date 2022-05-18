@@ -2,8 +2,7 @@
 
 #This script downloads country-wide IP lists and formats into a forwardauth middleware to make a local geolocation ipWhiteList for Traefik
 #The country IP data is obtained from the GeoLite2 csv database created by maxmind
-#Accessing the GeoLite 2 database is free but requires an account and licence key
-#For maxmind's TOS and to make account see https://www.maxmind.com
+#Accessing the GeoLite 2 database is free but requires an account and licence key, see maxmind.com 
 
 #VARIABLES
 ################
