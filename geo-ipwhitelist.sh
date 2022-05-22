@@ -38,7 +38,7 @@ curl -LsS -z "${lastModified}" "https://download.maxmind.com/app/geoip_download?
 
 if [ -f "countryIPList.zip" ]; then
   #Check if licence key was valid
-  if ! [ $(grep -q "Invalid license key" countryIPList.zip) ]; then
+  if grep -q "Invalid license key" countryIPList.zip ; then
     echo "Error: The license key is invalid"
     rm countryIPList.zip
     exit 1
