@@ -19,7 +19,6 @@ unzip -v
 2. [Update the local variables](#2-update-the-local-variables)
 3. [Run the script](#3-run-the-script)
 4. [Add middleware to router](#4-add-middleware-to-router)
-5. [Restart Traefik](#5-restart-traefik)
 
 ### 0. Download the script
 
@@ -63,5 +62,3 @@ containerLabel:
     # Apply the middleware named "middlewares-geo-ipwhitelist" to the router named "chosen-rtr"
     - "traefik.http.routers.chosen-rtr.middlewares=middlewares-geo-ipwhitelist@file"
 ```
-
-### 5. Restart Traefik
