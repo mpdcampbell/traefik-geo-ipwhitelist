@@ -21,7 +21,6 @@ unzip -v
 4. [Add middleware to router](#4-add-middleware-to-router)
 
 ### 0. Download the script
-
 Grab the script by your preferred method.</br>
 Give a bit of thought to where you are going to save as it will generate the lastModified file in same directory.</br>
 It will also download the GeoLite2 csv database to the local directory, before extracting the IPs and deleting, if 20-30mb drive space is significant.
@@ -61,4 +60,16 @@ containerLabel:
     - "traefik.enable=true"
     # Apply the middleware named "middlewares-geo-ipwhitelist" to the router named "chosen-rtr"
     - "traefik.http.routers.chosen-rtr.middlewares=middlewares-geo-ipwhitelist@file"
+```
+
+## To run on a schedule
+The GeoLite2 Country database updates every Tuesday. The below commands will set up a cron job every Wednesday at 8am your local time.
+You can run the script more often if you'd like. Your maxmind account has a daily limit of 2,000 database downloads but the HEAD request the script first runs to check last-modified datetime doesn't count towards this.
+
+```
+crontab -e
+```
+Then add the below line
+```
+0 8 * * wed /path to script/geo-ipwhitelist.sh
 ```
