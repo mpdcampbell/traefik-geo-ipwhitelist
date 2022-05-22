@@ -17,6 +17,15 @@ lastModifiedFilename="last-modified.txt"
 #SCRIPT
 #################
 
+#Check variables were updated
+if [ -z "$maxMindLicenceKey" ]; then
+  echo "Error: The maxMindLicenceKey variable is empty, exiting script."
+  exit 1
+elif [ -z "$traefikProviderDir" ]; then
+  echo "Error: The traefikProviderDir variable is empty, exiting script."
+  exit 1
+fi
+
 #Load in datetime geoIP list last modified
 if [ -f ${lastModifiedFilename} ]; then
   lastModified=$(cat ${lastModifiedFilename} )
@@ -28,6 +37,13 @@ fi
 curl -LsS -z "${lastModified}" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${maxMindLicenceKey}&suffix=zip" --output "countryIPList.zip"
 
 if [ -f "countryIPList.zip" ]; then
+  #Check if licence key was valid
+  if ! [ $(grep -q "Invalid license key" countryIPList.zip) ]; then
+    echo "Error: The license key is invalid"
+    rm countryIPList.zip
+    exit 1
+  fi
+
   #Overwrite new datetime for last modified
   date -r "countryIPList.zip" > ${lastModifiedFilename}
 
