@@ -11,8 +11,9 @@ maxMindLicenceKey= ENTER LICENCE KEY HERE
 middlewareFilename="geo-ipwhitelist.yml"
 middlewareName="middlewares-geo-ipwhitelist"
 traefikProviderDir= ENTER PATH TO MIDDLEWARE FILES eg /home/user/traefik/rules
-middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
 lastModifiedFilename="last-modified.txt"
+middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
+lastModifiedFilePath="$(dirname $0)/${lastModifiedFilename}"
 
 #SCRIPT
 #################
@@ -27,8 +28,8 @@ elif [ -z "$traefikProviderDir" ]; then
 fi
 
 #Load in datetime geoIP list last modified
-if [ -f ${lastModifiedFilename} ]; then
-  lastModified=$(cat ${lastModifiedFilename} )
+if [ -f ${lastModifiedFilePath} ]; then
+  lastModified=$(cat ${lastModifiedFilePath} )
 else
   lastModified=0
 fi
@@ -45,7 +46,7 @@ if [ -f "countryIPList.zip" ]; then
   fi
 
   #Overwrite new datetime for last modified
-  date -r "countryIPList.zip" > ${lastModifiedFilename}
+  date -r "countryIPList.zip" > ${lastModifiedFilePath}
 
   #Backup existing middleware yml
   if [ -f "${middlewareFilePath}" ]; then
