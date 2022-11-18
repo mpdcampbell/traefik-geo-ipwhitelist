@@ -7,10 +7,10 @@
 #VARIABLES
 ################
 countryCodes=("US" "CH") #ISO alpha-2 codes
-maxMindLicenceKey= ENTER LICENCE KEY HERE
+maxMindLicenceKey= #ENTER LICENCE KEY HERE
 middlewareFilename="geo-ipwhitelist.yml"
 middlewareName="middlewares-geo-ipwhitelist"
-traefikProviderDir= ENTER PATH TO MIDDLEWARE FILES eg /home/user/traefik/rules
+traefikProviderDir= #ENTER PATH TO MIDDLEWARE FILES eg /home/user/traefik/rules
 lastModifiedFilename="last-modified.txt"
 middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
 lastModifiedFilePath="$(dirname $0)/${lastModifiedFilename}"
