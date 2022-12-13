@@ -64,7 +64,6 @@ EOF
 
   #Extract ipv4 and ipv6 lists, reformat to just ip and geonameID, and append in new file
   unzip -jd countryIPList countryIPList.zip "*Blocks*.csv" "*Country-Locations-en.csv"
-  #cat countryIPList/*Blocks*.csv | cut -d, -f 1-2 --output-delimiter=" " > countryIPList/globalIPList.txt
   cat countryIPList/*Blocks*.csv | cut -d, -f 1-2 > countryIPList/globalIPList.txt
 
   #Add comment to middleware file with which countries included in whitelist 
@@ -75,7 +74,6 @@ EOF
     geoNameId=$( grep "${country}" countryIPList/*-en.csv | cut -d, -f1 )
     echo "         # ${country} IPs" >> ${middlewareFilePath}
     #Grab every IP listed in that country, reformat, append to middleware file
-    #grep ${geoNameId} countryIPList/globalIPList.txt | cut -d" " -f1 | sed 's/^/          - /' >> ${middlewareFilePath}
     grep ${geoNameId} countryIPList/globalIPList.txt | cut -d, -f1 | sed 's/^/          - /' >> ${middlewareFilePath}
   done    
   
