@@ -6,8 +6,8 @@
 countryCodes=($COUNTRY_CODES) #ISO alpha-2 codes (e.g FR)
 subCodes=($SUB_CODES) #ISO 3166-2 codes (e.g. FR-45)
 maxMindLicenceKey=${MAXMIND_KEY}
-middlewareFilename=${IPWHITELIST_FILENAME:-"geo-ipwhitelist.yml"}
-middlewareName=${IPWHITELIST_NAME:-"middlewares-geo-ipwhitelist"}
+middlewareFilename=${MIDDLEWARE_FILENAME:-"geo-ipwhitelist.yml"}
+middlewareName=${MIDDLEWARE_NAME:-"middlewares-geo-ipwhitelist"}
 traefikProviderDir=${TRAEFIK_PROVIDER_DIR:-"/rules"}
 lastModifiedFilename=${LASTMODIFIED_FILENAME:-"LastModified.txt"}
 middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
