@@ -130,7 +130,7 @@ country_addIPsToMiddleware() {
     return 0
   else
     countryAdded+=("$1")
-    echo "  Adding IPs for country "$1" to middleware."
+    echo "  Adding IPs for Country "$1" to middleware."
     echo "          #$1 IPs" >> ${middlewareFilePath}
     printf "%s\n" ${geoNameID[@]} > ${countryDir}/geoNameID.txt
     grep -hwFf ${countryDir}/geoNameID.txt ${countryDir}/globalIPList.txt | \
