@@ -1,8 +1,15 @@
+#Listed Countries: France
+#Listed Sublocations: YE-HD
+
 http:
   middlewares:
     middlewares-geoip-whitelist:
       ipWhiteList:
-        sourcerange:
-         # Whitelisted countries: FR
-         # FR IPs
-          - #.#.#.#
+        sourceRange:
+          # France IPs
+          - "#.#.#.#"
+          - "#.#.#.#"
+          # YE-HD IPs
+          - "#.#.#.#"
+          - "#.#.#.#"
+          
