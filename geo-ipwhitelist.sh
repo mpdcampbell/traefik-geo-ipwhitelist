@@ -117,8 +117,8 @@ sub_unzipAndExtractIPs() {
   unzip -jd ${subDir} ${subDir}/sub.zip "*Blocks*.csv" "*City-Locations-en.csv"
   cat ${subDir}/*Blocks*.csv | cut -d, -f 1-2 > ${subDir}/globalIPList.txt
   cat ${subDir}/*Locations-en.csv | \
-  cut -d, -f 1,5,7,8,9,10 | \
-  sed -r 's/(.*),(.*),(.*),(.*),(.*)(,.*)/\1,\2-\3,\4\,\2-\5\6/' | \
+  cut -d, -f 1,5,7,8,9,10,11 | \
+  sed -r 's/(.*),(.*),(.*),(.*),(.*),(.*)(,.*)/\1,\2-\3,\4\,\2-\5,\6\7/' | \
   sed -r 's/(^.*)(,[A-Z]+-,)(.*)/\1\3/' > ${subDir}/subList.txt
   rm ${subDir}/sub.zip ${subDir}/*Blocks*.csv ${subDir}/*Locations-en.csv
 }
@@ -129,7 +129,7 @@ country_addIPsToMiddleware() {
     echo "  Country "$1" not found in GeoLite2 Country database, skipping it."
     return 0
   else
-    countryAdded+="$1"
+    countryAdded+=("$1")
     echo "  Adding IPs for country "$1" to middleware."
     echo "          #$1 IPs" >> ${middlewareFilePath}
     printf "%s\n" ${geoNameID[@]} > ${countryDir}/geoNameID.txt
@@ -145,7 +145,7 @@ sub_addIPsToMiddleware() {
     echo "  Location "$1" not found in GeoLite2 City database, skipping it."
     return 0
   else
-    subAdded+="$1"
+    subAdded+=("$1")
     echo "  Adding IPs for Location "$1" to middleware."
     echo "          #$1 IPs" >> ${middlewareFilePath}
     printf "%s\n" ${geoNameID[@]} > ${subDir}/geoNameID.txt
@@ -172,10 +172,12 @@ EOF
 insertLocationList() {
   sed -i "1s/^/\n/" ${middlewareFilePath}
   if ! [ -z "$subAdded" ]; then
-    sed -i "1s/^/#Listed Sublocations: ${subAdded[@]}\n/" ${middlewareFilePath}
+    subString=$(echo "${subAdded[@]}")
+    sed -i "1s/^/#Listed Sublocations: ${subString}\n/" ${middlewareFilePath}
   fi
   if ! [ -z "$countryAdded" ]; then
-    sed -i "1s/^/#Listed Countries: ${countryAdded[@]}\n/" ${middlewareFilePath}
+    countryString=$(echo "${countryAdded[@]}")
+    sed -i "1s/^/#Listed Countries: ${countryString}\n/" ${middlewareFilePath}
   fi
 }
 
