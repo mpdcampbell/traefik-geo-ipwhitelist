@@ -3,7 +3,7 @@
 
 http:
   middlewares:
-    middlewares-geoip-whitelist:
+    middlewares-geo-ipwhitelist:
       ipWhiteList:
         sourceRange:
           # France IPs
