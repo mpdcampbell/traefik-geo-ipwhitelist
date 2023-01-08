@@ -13,7 +13,7 @@ services:
      #Optional: Overwrites the default cron schedule
        #- CRON_EXPRESSION=5 1 * * MON-FRI
      #Optional: Sets timezone used for cron, default UTC
-       #- TZ=${TZ}
+       #- TZ
      #Optional: Rename middleware and filename, for multiple instances of container
        #- MIDDLEWARE_FILENAME
        #- MIDDLEWARE_NAME
