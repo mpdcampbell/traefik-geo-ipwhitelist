@@ -63,7 +63,9 @@ sub_getLastModified() {
 } 
 
 country_getZip() {
-  if ! [[ ${remoteLastModified} > ${countryLastModified} ]]; then
+  remoteSeconds=$(date -d "$remoteLastModified" -D "%a, %d %b %Y %T" +'%s')
+  countrySeconds=$(date -d "$countryLastModified" -D "%a, %d %b %Y %T" +'%s')
+  if ! [[ ${remoteSeconds} -gt ${countrySeconds} ]]; then
     echo "Not downloading GeoLite2 Country database as local copy is up to date."
     echo "  Remote GeoLite2 Country database was last updated on ${remoteLastModified}." 
     echo "  Local GeoLite2 Country database version is dated ${countryLastModified}."
@@ -85,7 +87,9 @@ country_getZip() {
 }
 
 sub_getZip() {
-  if ! [[ ${remoteLastModified} > ${subLastModified} ]]; then
+  remoteSeconds=$(date -d "$remoteLastModified" -D "%a, %d %b %Y %T" +'%s')
+  subSeconds=$(date -d "$subLastModified" -D "%a, %d %b %Y %T" +'%s')
+  if ! [[ ${remoteSeconds} -gt ${subSeconds} ]]; then
     echo "Not downloading GeoLite2 City database as local copy is up to date."
     echo "  Remote GeoLite2 City database was last updated on ${remoteLastModified}." 
     echo "  Local GeoLite2 City database version is dated ${subLastModified}."
