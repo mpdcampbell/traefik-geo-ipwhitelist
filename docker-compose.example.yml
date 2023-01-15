@@ -1,3 +1,16 @@
+#Ensure below lines are added to your Traefik service to enable file providers
+#
+#      volumes:
+#        - /path/to/provider/directory:/rules
+#      command:
+#        - --providers.file.directory=/rules
+#        - --providers.file.watch=true
+#
+# Then to apply the middleware to a service, add the middleware with "middlewareName@file" like below.
+#
+#       labels:
+#         - "traefik.http.routers.routerName.middlewares=middlewares-geo-ipwhilelist@file"
+
 services:
     geoipwhitelist:
       image: mpdcampbell/traefik-geo-ipwhitelist
@@ -7,13 +20,14 @@ services:
      #Optional: If you want the Geolite2 databases to persist
        #- /path/to/local/directory:/geoip
       environment:
-        - MAXMIND_KEY
+        - MAXMIND_KEY="yourKeyhere"
+     #Use ISO 3166-1 or 3166-2 codes (recommended), or place names with spaces replaced by dashes.
         - COUNTRY_CODES=FR New-Zealand
         - SUB_CODES=VN-43 West-Virginia:Dallas
      #Optional: Overwrites the default cron schedule
        #- CRON_EXPRESSION=5 1 * * MON-FRI
      #Optional: Sets timezone used for cron, default UTC
        #- TZ
-     #Optional: Rename middleware and filename, for multiple instances of container
+     #Optional: Rename middleware and filename, for running multiple instances of container
        #- MIDDLEWARE_FILENAME
        #- MIDDLEWARE_NAME
