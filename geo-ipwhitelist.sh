@@ -135,7 +135,7 @@ sub_unzipAndExtract() {
 }
 
 country_addIPsToMiddleware() {
-  geoNameID=$( grep -hwF "$1" ${countryDir}/countryList.txt | cut -d, -f1 )
+  geoNameID=$( grep -hwiF "$1" ${countryDir}/countryList.txt | cut -d, -f1 )
   if [ -z "${geoNameID}" ]; then
     echo "  Country "$1" not found in GeoLite2 Country database, skipping it."
     return 0
@@ -151,7 +151,7 @@ country_addIPsToMiddleware() {
 }
 
 sub_addIPsToMiddleware() {
-  geoNameID=$( grep -hwF "$1" ${subDir}/subList.txt | cut -d, -f1 )
+  geoNameID=$( grep -hwiF "$1" ${subDir}/subList.txt | cut -d, -f1 )
   if [ -z "${geoNameID}" ]; then
     echo "  Location "$1" not found in GeoLite2 City database, skipping it."
     return 0
