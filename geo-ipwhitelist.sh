@@ -81,7 +81,7 @@ country_getZip() {
       return 1
     else
       echo "${remoteLastModified}" > "${lastModifiedDir}/country${lastModifiedFilename}"
-      country_unzipAndExtractIPs
+      country_unzipAndExtract
     fi
   fi
 }
@@ -105,12 +105,12 @@ sub_getZip() {
       exit 1
     else
       echo "${remoteLastModified}" > "${lastModifiedDir}/sub${lastModifiedFilename}"
-      sub_unzipAndExtractIPs
+      sub_unzipAndExtract
     fi
   fi
 }
 
-country_unzipAndExtractIPs() {
+country_unzipAndExtract() {
   unzip -jd ${countryDir} ${countryDir}/country.zip "*Blocks*.csv" "*Country-Locations-en.csv"
   cat ${countryDir}/*Blocks*.csv | cut -d, -f 1-2 > ${countryDir}/globalIPList.txt
   cat ${countryDir}/*Locations-en.csv | \
@@ -120,7 +120,7 @@ country_unzipAndExtractIPs() {
   rm ${countryDir}/country.zip ${countryDir}/*Blocks*.csv ${countryDir}/*Locations-en.csv
 }
 
-sub_unzipAndExtractIPs() {
+sub_unzipAndExtract() {
   unzip -jd ${subDir} ${subDir}/sub.zip "*Blocks*.csv" "*City-Locations-en.csv"
   cat ${subDir}/*Blocks*.csv | cut -d, -f 1-2 > ${subDir}/globalIPList.txt
   cat ${subDir}/*Locations-en.csv | \
