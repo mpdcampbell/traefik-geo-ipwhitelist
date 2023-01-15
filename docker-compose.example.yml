@@ -1,15 +1,15 @@
 services:
     geoipwhitelist:
-      image: traefik-geo-ipwhitelist
+      image: mpdcampbell/traefik-geo-ipwhitelist
       container_name: geoipwhitelist
       volumes:
         - /path/to/provider/directory:/rules
      #Optional: If you want the Geolite2 databases to persist
        #- /path/to/local/directory:/geoip
       environment:
-        - MAXMIND_KEY=${MAXMIND_KEY}
-        - COUNTRY_CODES=FR PE
-        - SUB_CODES=GB-GLG JP-08
+        - MAXMIND_KEY
+        - COUNTRY_CODES=FR New-Zealand
+        - SUB_CODES=VN-43 West-Virginia:Dallas
      #Optional: Overwrites the default cron schedule
        #- CRON_EXPRESSION=5 1 * * MON-FRI
      #Optional: Sets timezone used for cron, default UTC
