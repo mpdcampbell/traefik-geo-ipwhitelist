@@ -3,8 +3,8 @@
 #VARIABLES
 ################
 
-countryCodes=($COUNTRY_CODES) #ISO alpha-2 codes (e.g FR)
-subCodes=($SUB_CODES) #ISO 3166-2 codes (e.g. FR-45)
+countryCodes=($COUNTRY_CODES)
+subCodes=($SUB_CODES)
 maxMindLicenceKey=${MAXMIND_KEY}
 middlewareFilename=${MIDDLEWARE_FILENAME:-"geo-ipwhitelist.yml"}
 middlewareName=${MIDDLEWARE_NAME:-"middlewares-geo-ipwhitelist"}
@@ -113,7 +113,10 @@ sub_getZip() {
 country_unzipAndExtractIPs() {
   unzip -jd ${countryDir} ${countryDir}/country.zip "*Blocks*.csv" "*Country-Locations-en.csv"
   cat ${countryDir}/*Blocks*.csv | cut -d, -f 1-2 > ${countryDir}/globalIPList.txt
-  cat ${countryDir}/*Locations-en.csv | cut -d, -f 1,5,6 > ${countryDir}/countryList.txt
+  cat ${countryDir}/*Locations-en.csv | \
+  cut -d, -f 1,5,6 | \
+  sed -r 's/ /-/g' | \
+  sed -r 's/"//g' > ${countryDir}/countryList.txt
   rm ${countryDir}/country.zip ${countryDir}/*Blocks*.csv ${countryDir}/*Locations-en.csv
 }
 
@@ -121,9 +124,13 @@ sub_unzipAndExtractIPs() {
   unzip -jd ${subDir} ${subDir}/sub.zip "*Blocks*.csv" "*City-Locations-en.csv"
   cat ${subDir}/*Blocks*.csv | cut -d, -f 1-2 > ${subDir}/globalIPList.txt
   cat ${subDir}/*Locations-en.csv | \
-  cut -d, -f 1,5,7,8,9,10,11 | \
-  sed -r 's/(.*),(.*),(.*),(.*),(.*),(.*)(,.*)/\1,\2-\3,\4\,\2-\5,\6\7/' | \
-  sed -r 's/(^.*)(,[A-Z]+-,)(.*)/\1\3/' > ${subDir}/subList.txt
+  cut -d, -f 1,5,6,7,8,9,10,11 | \
+  sed -r 's/ /-/g' | \
+  sed -r 's/"//g' | \
+  sed -r 's/(.*),(.*),(.*),(.*),(.*),(.*),(.*),(.*)/\1,\2-\4,\5\,\2-\6,\7,\8,\3:\8,\5:\8,\7:\8/' | \
+  sed -r 's/(,[A-Z]*-,)//g' | \
+  sed -r 's/(,,[A-Za-z-]*:,.*)//g' | \
+  sed -r 's/(,:.*$)//' > ${subDir}/subList.txt
   rm ${subDir}/sub.zip ${subDir}/*Blocks*.csv ${subDir}/*Locations-en.csv
 }
 
