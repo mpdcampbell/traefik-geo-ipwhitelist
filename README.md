@@ -1,75 +1,83 @@
 # traefik-geo-ipwhitelist
-A bash script to create a per country ipWhiteList middleware for Traefik.</br>
 
-The script downloads the GeoLite2 country database, extracts the IPs for a given list of countries and format into a ipWhiteList middleware file for Traefik.</br>
+A Docker container that creates and updates a GeoIP [ipwhitelist middleware](https://doc.traefik.io/traefik/middlewares/http/ipwhitelist/) file for Traefik.</br>
+Uses the Maxmind GeoLite2 database and so requires a free [MaxMind account](https://www.maxmind.com/en/geolite2/signup) to work.</br>
+Access can be restricted at country, state, county, city or town level (with decreasing accuracy).</br>
+Accepts [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) country codes, [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes) subdivision codes, and [place names](#formatting-iso-3166-codes-and-place-names).</br>
 </br>
-When downloading the GeoLite2 database the script saves datetime to local file.</br>
-For subsequent runs the script queries Last-Modified http header for GeoLite2 database and only updates the middle ipWhiteList middleware if the database has been modified since the last download. 
+_____
+### TL;DR: How do I use this?
+- Make a free MaxMind account to get a license key.  
+- Download [docker-compose.example.yml](/docker-compose.example.yml) and add the lines to your traefik config as instructed.  
+- Replace the dummy paths and key in the example.  
+- Replace the location variables, countries go in COUNTRY_CODES, locations smaller than countries go in SUB_CODES.  
+- Start up the container with ``docker-compose -f docker-compose.example.yml up -d``
+- Check the logs with ``docker logs -tf geoipwhitelist`` to confirm its working.
+_____
+<br>  
 
-## Dependencies
-The script uses [unzip](https://manpages.ubuntu.com/manpages/focal/man1/unzip.1.html) to unzip the downloaded zip.
-You can check if it is installed by running the below:
-```
-unzip -v
-```
+## Contents
+- [How does it work?](#how-does-it-work)
+- [Environment variables](#environment-variables)
+- [Formatting ISO 3166 codes and place names](#formatting-iso-3166-codes-and-place-names)
+- [Default cron schedule](#default-cron-schedule)
 
-## How to use
-0. [Download the script](#0-download-the-script)
-1. [Get a Licence Key](#1-get-a-licence-key) 
-2. [Update the local variables](#2-update-the-local-variables)
-3. [Run the script](#3-run-the-script)
-4. [Add middleware to router](#4-add-middleware-to-router)
+## How does it work?
+A bash script downloads the GeoLite2 Country and City databases, reformats them and saves a local copy. Then it searches through the database for country/sublocations passed in as environment variables, extracts the matching IPs and formats into an ipWhiteList middleware file for Traefik. This is written down to the provider directory outside the container. With Traefik configured to use file providers, the middleware can then be added to a router to restrict access to that service to only IPs from the listed locations.
 
-### 0. Download the script
-Grab the script by your preferred method.</br>
-Give a bit of thought to where you are going to save as it will generate the lastModified file in same directory.</br>
-It will also download the GeoLite2 csv database to the local directory, before extracting the IPs and deleting, if 20-30mb drive space is significant.
+When downloading the databases the last-modified datetime is queried and saved. A cron job then reruns the script at regular intervals (configurable) and each time the last-modified HTTP header for the remote database is queried. The remote database is only downloaded and the middleware updated if the database has been modified since the last download.
 
-### 1. Get a Licence Key
-The geolocation IP list is downloaded from the free GeoLite2 database, [more info here](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data).</br> To access it you need to make an account and get a licence key.
+<br>
 
-### 2. Update the local variables
-Variables you have to change
+## Environment Variables
 
-| Variable           | What it is                            |
-| ------------------ | ------------------------------------- |
-| countryCodes       | Array of [ISO alpha-2 codes]( https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements)         |
-| maxMindLicenceKey  | Your maxmind licence key              |
-| traefikProviderDir | The directory path where your Traefik instance looks for [provider files](https://doc.traefik.io/traefik/providers/file/) |
+### Mandatory Variables
 
-Variables you might want to change
-| Variable             | What it is                            |
-| -------------------- | ------------------------------------- |
-| middlewareFilename   | The filename for the yml that defines the ipWhitelist middleware |
-| middlewareName  | The name for the middleware to be referenced in traefik config        |
-| lastModifiedFilename | The filename for the file storing the datetime of when the IP list was last updated |
+| Variable           | What it is                            | Example Value          |
+| ------------------ | ------------------------------------- |------------------------|
+| MAXMIND_KEY        | Your MaxMind licence key              | "stringHere"           |
+| COUNTRY_CODES      | List of countries you want to allow IPs from. <br> See [formatting](#country_codes) for more details.| FR New-Zealand |
+| SUB_CODES | List of locations smaller than a country that you want to allow IPs from. <br> See [formatting](#sub_codes) for more details.|VN-43 West-Virginia:Dallas |
 
-### 3. Run the script
-After it runs you should have file called middleFilename saved at traefikProviderDir.</br>
-It should be of the same format as example [geo-ipWhiteList.yml](geo-ipwhitelist.yml)
+### Optional Variables
 
-### 4. Add middleware to router
-Exact syntax for this varies depending on your [Traefik configuration](https://doc.traefik.io/traefik/middlewares/overview/)</br>
-See below a general example for a Docker config, key part is defining "@file" at end of middleware name to inform Traefik the middleware is defined in a file at the provider directory.</br> 
-(For example implementation see [L358](https://github.com/mpdcampbell/selfhosted-services/blob/main/docker-compose-traefik.yml#L358) from my selfhosted-services [docker-compose.yml](https://github.com/mpdcampbell/selfhosted-services/blob/main/docker-compose-traefik.yml))
+| Variable             | What it is                                                                                | Example Value           |
+| ---------------------| ----------------------------------------------------------------------------------------- |-------------------------|
+| CRON_EXPRESSION      | Overwrites the default cron schedule of ```0 6 * * wed,sat```                             | 5 1 * * MON-FRI         |
+| TZ                   | Sets the timezone inside the container, used by cron.</br>Default is UTC                   | EDT                     |
+| MIDDLEWARE_FILENAME  | The filename of the middleware file written to the provider dir.                          | berlinOnlyMiddleware.yml|
+| MIDDLEWARE_NAME      | The name of the middleware to reference inside docker-compose.                            | middleware-berlinOnly   |
+| TRAEFIK_PROVIDER_DIR | The directory inside the container that the middleware file is written to.</br>Default value /rules| "/path/foldername"      |
+| LASTMODIFIED_DIR     | The directory inside the container that the GeoLite2 databases and date last updated timestamps are saved to by default. </br>Default value /geoip| "/path/foldername"|
 
-```yml
-containerLabel:
-  image: containerImage
-  labels:
-    - "traefik.enable=true"
-    # Apply the middleware named "middlewares-geo-ipwhitelist" to the router named "chosen-rtr"
-    - "traefik.http.routers.chosen-rtr.middlewares=middlewares-geo-ipwhitelist@file"
-```
+<br>
 
-## To run on a schedule
-The GeoLite2 Country database updates every Tuesday. The below commands will set up a cron job every Wednesday at 8am your local time.
-You can run the script more often if you'd like. Your maxmind account has a daily limit of 2,000 database downloads but the HEAD request the script first runs to check last-modified datetime doesn't count towards this.
+## Formatting ISO 3166 codes and place names
+### COUNTRY_CODES
+- Enter the countries you want to allow as either [ISO-3166-1 Alpha 2 codes](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) or the place name. Using ISO codes is recommended as they are unambiguous. Place names and their spellings can vary regionally and is more likely to lead to errors.<br>
+- Seperate elements in the list with a space.<br>
+- If a place name contains spaces (i.e. New Zealand) replace the spaces with a dash (i.e. New-Zealand)<br>
+- Don't use quotation marks.<br>
+- The list is case insensitive.<br>
 
-```
-crontab -e
-```
-Then add the below line
-```
-0 8 * * wed /path to script/geo-ipwhitelist.sh
-```
+### SUB_CODES
+**Note: There is no guarantee the sublocation you wish to limit access to is listed in the GeoLite2 database.**<br>
+<br>
+Accepts [ISO-3166-2 codes](https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes) but the GeoLite database also lists IP address by smaller areas. For example in the United States the ISO-3166-2 codes represent states, when you might want to limit access to a given city or town. For this reasion the variable also accepts place names, however they should always be qualified with the larger region. Take Berlin as an example. 29 locations in the GeoLite2 database have Berlin in their name including towns in Russia, Uruguay, Colombia, and the United States. To narrow this down, the SUB_CODES variable accepts place names in the form ```Larger-Region:Location```.<br>
+<br>
+For example:<br>
+```United-States:Berlin``` - This will match all the listed towns in the United States named Berlin.<br>
+```Wisconsin:Berlin``` - This will match the listed towns in Wisconsin named Berlin.<br>
+```Wisconsin:New-Berlin``` - This will match the town New Berlin in Wisconsin, which wasn't included in the previous example.<br> 
+Please note that obviously all towns and regions in the world are not in the database. Also regional spelling can vary. In general using place names is much more hit-or-miss than using ISO codes. You can check what is listed by having a grep in the subList.txt file inside LASTMODIFIED_DIR.<br>
+<br>
+Also the same format rules as for COUNTRY_CODES apply:
+- Seperate elements in the list with a space.<br>
+- If a place name contains spaces (i.e. New Berlin) replace the spaces with a dash (i.e. New-Berlin)<br>
+- Don't use quotation marks.<br>
+- The list is case insensitive.<br>
+
+## Default cron schedule
+By default the container adds a cron job to run the script at 6 AM UTC on Wednesdays and Saturdays. This is because the MaxMind Geolite 2 country and city databases update every [Tuesday and Friday.](https://support.maxmind.com/hc/en-us/articles/4408216129947) If you want to change the schedule you can define your own [cron expression](https://crontab.cronhub.io/) in the CRON_EXPRESSION environment variable, which will overwrite the default schedule. The cron job will run with the default timezone, UTC, but you can change this with the TZ environment variable.<br>
+<br>
+The free MaxMind licence has a daily limit of 2,000 database downloads but the script first runs a HEAD request, to check if the last-modified header has changed, which doesn't count towards this limit. The script should only download the database if the last-modified is more recent than the last-modified time for the local database copies.
