@@ -1,15 +1,20 @@
-#Listed Countries: France
-#Listed Sublocations: YE-HD
+#Listed Countries: FR New-Zealand
+#Listed Sublocations: VN-43 West-Virginia:Dallas
 
 http:
   middlewares:
     middlewares-geo-ipwhitelist:
       ipWhiteList:
         sourceRange:
-          # France IPs
+          # FR IPs
           - "#.#.#.#"
           - "#.#.#.#"
-          # YE-HD IPs
+          # New-Zealand IPs
           - "#.#.#.#"
           - "#.#.#.#"
-          
+          # VN-43 IPs
+          - "#.#.#.#"
+          - "#.#.#.#"
+          # West-Virginia:Dallas IPs
+          - "#.#.#.#"
+          - "#.#.#.#"
