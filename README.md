@@ -21,6 +21,7 @@ _____
 - [Environment variables](#environment-variables)
 - [Formatting ISO 3166 codes and place names](#formatting-iso-3166-codes-and-place-names)
 - [Default cron schedule](#default-cron-schedule)
+- [License](#license)
 
 ## How does it work?
 A bash script downloads the GeoLite2 Country and City databases, reformats them and saves a local copy. Then it searches through the database for country/sublocations passed in as environment variables, extracts the matching IPs and formats into an ipWhiteList middleware file for Traefik. This is written down to the provider directory outside the container. With Traefik configured to use file providers, the middleware can then be added to a router to restrict access to that service to only IPs from the listed locations.
@@ -35,7 +36,7 @@ When downloading the databases the last-modified datetime is queried and saved. 
 
 | Variable           | What it is                            | Example Value          |
 | ------------------ | ------------------------------------- |------------------------|
-| MAXMIND_KEY        | Your MaxMind licence key              | "stringHere"           |
+| MAXMIND_KEY        | Your MaxMind license key              | stringHere           |
 | COUNTRY_CODES      | List of countries you want to allow IPs from. <br> See [formatting](#country_codes) for more details.| FR New-Zealand |
 | SUB_CODES | List of locations smaller than a country that you want to allow IPs from. <br> See [formatting](#sub_codes) for more details.|VN-43 West-Virginia:Dallas |
 
@@ -47,8 +48,10 @@ When downloading the databases the last-modified datetime is queried and saved. 
 | TZ                   | Sets the timezone inside the container, used by cron.</br>Default is UTC                   | EDT                     |
 | MIDDLEWARE_FILENAME  | The filename of the middleware file written to the provider dir.                          | berlinOnlyMiddleware.yml|
 | MIDDLEWARE_NAME      | The name of the middleware to reference inside docker-compose.                            | middleware-berlinOnly   |
-| TRAEFIK_PROVIDER_DIR | The directory inside the container that the middleware file is written to.</br>Default value /rules| "/path/foldername"      |
+| TRAEFIK_PROVIDER_DIR | The directory inside the container that the middleware file is written to.</br>Default value /rules| /path/foldername      |
 | LASTMODIFIED_DIR     | The directory inside the container that the GeoLite2 databases and date last updated timestamps are saved to by default. </br>Default value /geoip| "/path/foldername"|
+| COUNTRY_DIR | The directory inside the container that the country database file is saved to.</br>Default value LASTMODIFIED_DIR/country| /path/foldername      |
+| SUB_DIR | The directory inside the container that the subdivision database file is saved to.</br>Default value LASTMODIFIED_DIR/sub| /path/foldername      |
 
 <br>
 
@@ -68,16 +71,23 @@ Accepts [ISO-3166-2 codes](https://en.wikipedia.org/wiki/ISO_3166-2#Current_code
 For example:<br>
 ```United-States:Berlin``` - This will match all the listed towns in the United States named Berlin.<br>
 ```Wisconsin:Berlin``` - This will match the listed towns in Wisconsin named Berlin.<br>
-```Wisconsin:New-Berlin``` - This will match the town New Berlin in Wisconsin, which wasn't included in the previous example.<br> 
-Please note that obviously all towns and regions in the world are not in the database. Also regional spelling can vary. In general using place names is much more hit-or-miss than using ISO codes. You can check what is listed by having a grep in the subList.txt file inside LASTMODIFIED_DIR.<br>
+```Wisconsin:New-Berlin``` - This will match the town New Berlin in Wisconsin, which wasn't in the previous example.<br> 
+Please note that obviously all towns and regions in the world are not in the database. Also regional spelling can vary. In general using place names is much more hit-or-miss than using ISO codes. You can check what is listed by having a grep in the subList.txt file inside SUB_DIR.<br>
 <br>
 Also the same format rules as for COUNTRY_CODES apply:
 - Seperate elements in the list with a space.<br>
 - If a place name contains spaces (i.e. New Berlin) replace the spaces with a dash (i.e. New-Berlin)<br>
 - Don't use quotation marks.<br>
 - The list is case insensitive.<br>
+<br>
 
 ## Default cron schedule
 By default the container adds a cron job to run the script at 6 AM UTC on Wednesdays and Saturdays. This is because the MaxMind Geolite 2 country and city databases update every [Tuesday and Friday.](https://support.maxmind.com/hc/en-us/articles/4408216129947) If you want to change the schedule you can define your own [cron expression](https://crontab.cronhub.io/) in the CRON_EXPRESSION environment variable, which will overwrite the default schedule. The cron job will run with the default timezone, UTC, but you can change this with the TZ environment variable.<br>
 <br>
-The free MaxMind licence has a daily limit of 2,000 database downloads but the script first runs a HEAD request, to check if the last-modified header has changed, which doesn't count towards this limit. The script should only download the database if the last-modified is more recent than the last-modified time for the local database copies.
+The free MaxMind account has a daily limit of 2,000 database downloads but the script first runs a HEAD request, to check if the last-modified header has changed, which doesn't count towards this limit. The script should only download the database if the last-modified is more recent than the last-modified time for the local database copies.
+
+<br>
+
+## License
+
+[BSD 2-Clause License](/LICENSE)
