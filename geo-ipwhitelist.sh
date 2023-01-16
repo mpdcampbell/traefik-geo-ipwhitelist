@@ -13,8 +13,8 @@ lastModifiedFilename=${LASTMODIFIED_FILENAME:-"LastModified.txt"}
 middlewareFilePath="${traefikProviderDir}/${middlewareFilename}"
 lastModifiedDir=${LASTMODIFIED_DIR:-"/geoip"}
 lastModifiedFilePath="${lastModifiedDir}/${lastModifiedFilename}"
-countryDir=${COUNTRY_DIR:-"/geoip/country"}
-subDir=${SUB_DIR:-"/geoip/sub"}
+countryDir=${COUNTRY_DIR:-"${lastModifiedDir}/country"}
+subDir=${SUB_DIR:-"${lastModifiedDir}/sub"}
 countryUrl="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country-CSV&license_key=${maxMindLicenceKey}&suffix=zip"
 subUrl="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City-CSV&license_key=${maxMindLicenceKey}&suffix=zip"
 yearsOldDate="Sun, 07 Jan 1990 01:00:00 GMT"
