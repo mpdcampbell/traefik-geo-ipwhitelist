@@ -1,4 +1,4 @@
-# traefik-geo-ipwhitelist
+# [<img alt="alt_text" width="50px" src="https://www.codeslikeaduck.com/img/codeDuck.svg" />](https://www.codeslikeaduck.com/)  traefik-geo-ipwhitelist <br> [![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)](https://github.com/mpdcampbell/traefik-geo-ipwhitelist/blob/main/LICENSE) [![Docker Pulls](https://img.shields.io/docker/pulls/mpdcampbell/traefik-geo-ipwhitelist?color=red)](https://hub.docker.com/r/mpdcampbell/traefik-geo-ipwhitelist)
 
 A Docker container that creates and updates a GeoIP [ipwhitelist middleware](https://doc.traefik.io/traefik/middlewares/http/ipwhitelist/) file for Traefik.</br>
 Uses the Maxmind GeoLite2 database and so requires a free [MaxMind account](https://www.maxmind.com/en/geolite2/signup) to work.</br>
@@ -28,8 +28,6 @@ A bash script downloads the GeoLite2 Country and City databases, reformats them 
 
 When downloading the databases the last-modified datetime is queried and saved. A cron job then reruns the script at regular intervals (configurable) and each time the last-modified HTTP header for the remote database is queried. The remote database is only downloaded and the middleware updated if the database has been modified since the last download.
 
-<br>
-
 ## Environment Variables
 
 ### Mandatory Variables
@@ -52,8 +50,6 @@ When downloading the databases the last-modified datetime is queried and saved. 
 | LASTMODIFIED_DIR     | The directory inside the container that the GeoLite2 databases and date last updated timestamps are saved to by default. </br>Default value /geoip| "/path/foldername"|
 | COUNTRY_DIR | The directory inside the container that the country database file is saved to.</br>Default value LASTMODIFIED_DIR/country| /path/foldername      |
 | SUB_DIR | The directory inside the container that the subdivision database file is saved to.</br>Default value LASTMODIFIED_DIR/sub| /path/foldername      |
-
-<br>
 
 ## Formatting ISO 3166 codes and place names
 ### COUNTRY_CODES
@@ -79,14 +75,11 @@ Also the same format rules as for COUNTRY_CODES apply:
 - If a place name contains spaces (i.e. New Berlin) replace the spaces with a dash (i.e. New-Berlin)<br>
 - Don't use quotation marks.<br>
 - The list is case insensitive.<br>
-<br>
 
 ## Default cron schedule
 By default the container adds a cron job to run the script at 6 AM UTC on Wednesdays and Saturdays. This is because the MaxMind Geolite 2 country and city databases update every [Tuesday and Friday.](https://support.maxmind.com/hc/en-us/articles/4408216129947) If you want to change the schedule you can define your own [cron expression](https://crontab.cronhub.io/) in the CRON_EXPRESSION environment variable, which will overwrite the default schedule. The cron job will run with the default timezone, UTC, but you can change this with the TZ environment variable.<br>
 <br>
 The free MaxMind account has a daily limit of 2,000 database downloads but the script first runs a HEAD request, to check if the last-modified header has changed, which doesn't count towards this limit. The script should only download the database if the last-modified is more recent than the last-modified time for the local database copies.
-
-<br>
 
 ## License
 
