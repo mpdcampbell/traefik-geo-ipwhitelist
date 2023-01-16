@@ -50,6 +50,7 @@ When downloading the databases the last-modified datetime is queried and saved. 
 | LASTMODIFIED_DIR     | The directory inside the container that the GeoLite2 databases and date last updated timestamps are saved to by default. </br>Default value /geoip| "/path/foldername"|
 | COUNTRY_DIR | The directory inside the container that the country database file is saved to.</br>Default value LASTMODIFIED_DIR/country| /path/foldername      |
 | SUB_DIR | The directory inside the container that the subdivision database file is saved to.</br>Default value LASTMODIFIED_DIR/sub| /path/foldername      |
+<br>
 
 ## Formatting ISO 3166 codes and place names
 ### COUNTRY_CODES
