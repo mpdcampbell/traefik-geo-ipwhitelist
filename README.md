@@ -35,7 +35,7 @@ When downloading the databases the last-modified datetime is queried and saved. 
 
 | Variable           | What it is                            | Example Value          |
 | ------------------ | ------------------------------------- |------------------------|
-| MAXMIND_KEY        | Your MaxMind licence key              | "stringHere"           |
+| MAXMIND_KEY        | Your MaxMind licence key              | stringHere           |
 | COUNTRY_CODES      | List of countries you want to allow IPs from. <br> See [formatting](#country_codes) for more details.| FR New-Zealand |
 | SUB_CODES | List of locations smaller than a country that you want to allow IPs from. <br> See [formatting](#sub_codes) for more details.|VN-43 West-Virginia:Dallas |
 
@@ -47,8 +47,10 @@ When downloading the databases the last-modified datetime is queried and saved. 
 | TZ                   | Sets the timezone inside the container, used by cron.</br>Default is UTC                   | EDT                     |
 | MIDDLEWARE_FILENAME  | The filename of the middleware file written to the provider dir.                          | berlinOnlyMiddleware.yml|
 | MIDDLEWARE_NAME      | The name of the middleware to reference inside docker-compose.                            | middleware-berlinOnly   |
-| TRAEFIK_PROVIDER_DIR | The directory inside the container that the middleware file is written to.</br>Default value /rules| "/path/foldername"      |
+| TRAEFIK_PROVIDER_DIR | The directory inside the container that the middleware file is written to.</br>Default value /rules| /path/foldername      |
 | LASTMODIFIED_DIR     | The directory inside the container that the GeoLite2 databases and date last updated timestamps are saved to by default. </br>Default value /geoip| "/path/foldername"|
+| COUNTRY_DIR | The directory inside the container that the country database file is saved to.</br>Default value LASTMODIFIED_DIR/country| /path/foldername      |
+| SUB_DIR | The directory inside the container that the subdivision database file is saved to.</br>Default value LASTMODIFIED_DIR/sub| /path/foldername      |
 
 <br>
 
@@ -68,8 +70,8 @@ Accepts [ISO-3166-2 codes](https://en.wikipedia.org/wiki/ISO_3166-2#Current_code
 For example:<br>
 ```United-States:Berlin``` - This will match all the listed towns in the United States named Berlin.<br>
 ```Wisconsin:Berlin``` - This will match the listed towns in Wisconsin named Berlin.<br>
-```Wisconsin:New-Berlin``` - This will match the town New Berlin in Wisconsin, which wasn't included in the previous example.<br> 
-Please note that obviously all towns and regions in the world are not in the database. Also regional spelling can vary. In general using place names is much more hit-or-miss than using ISO codes. You can check what is listed by having a grep in the subList.txt file inside LASTMODIFIED_DIR.<br>
+```Wisconsin:New-Berlin``` - This will match the town New Berlin in Wisconsin, which wasn't in the previous example.<br> 
+Please note that obviously all towns and regions in the world are not in the database. Also regional spelling can vary. In general using place names is much more hit-or-miss than using ISO codes. You can check what is listed by having a grep in the subList.txt file inside SUB_DIR.<br>
 <br>
 Also the same format rules as for COUNTRY_CODES apply:
 - Seperate elements in the list with a space.<br>
