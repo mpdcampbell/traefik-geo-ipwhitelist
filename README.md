@@ -85,3 +85,5 @@ The free MaxMind account has a daily limit of 2,000 database downloads but the s
 ## License
 
 [BSD 2-Clause License](/LICENSE)
+
+Also utilises Maxmind GeoLite2 database which has its own [terms and conditions.](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data)
