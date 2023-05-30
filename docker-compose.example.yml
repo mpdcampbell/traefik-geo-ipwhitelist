@@ -9,7 +9,7 @@
 # Then to apply the middleware to a service, add the middleware with "middlewareName@file" like below.
 #
 #       labels:
-#         - "traefik.http.routers.routerName.middlewares=middlewares-geo-ipwhilelist@file"
+#         - "traefik.http.routers.routerName.middlewares=middlewares-geo-ipwhitelist@file"
 
 services:
     geoipwhitelist:
