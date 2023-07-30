@@ -1,5 +1,9 @@
 # [<img alt="alt_text" width="50px" src="https://www.codeslikeaduck.com/img/codeDuck.svg" />](https://www.codeslikeaduck.com/)  traefik-geo-ipwhitelist <br> [![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)](https://github.com/mpdcampbell/traefik-geo-ipwhitelist/blob/main/LICENSE) [![Docker Pulls](https://img.shields.io/docker/pulls/mpdcampbell/traefik-geo-ipwhitelist?color=red)](https://hub.docker.com/r/mpdcampbell/traefik-geo-ipwhitelist)
 
+# _This solution has been obsoleted by [traefik-geoip-filter](https://github.com/mpdcampbell/traefik-geoip-filter) which can act as a blocklist or allowlist._
+
+</br>
+
 A Docker container that creates and updates a GeoIP [ipwhitelist middleware](https://doc.traefik.io/traefik/middlewares/http/ipwhitelist/) file for Traefik.</br>
 Uses the Maxmind GeoLite2 database and so requires a free [MaxMind account](https://www.maxmind.com/en/geolite2/signup) to work.</br>
 Access can be restricted at country, state, county, city or town level (with decreasing accuracy).</br>
